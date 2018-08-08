@@ -9,9 +9,9 @@ import 'iview/dist/styles/iview.css';
 import VueI18n from 'vue-i18n';
 import util from './libs/util';
 
-import Raven from 'raven-js';
-import RavenVue from 'raven-js/plugins/vue';
-Raven.config('http://7a81c2d23e744691bd67198a05afebd1@www.johnkee.com:9000/3').addPlugin(RavenVue, Vue).install();
+// import Raven from 'raven-js';
+// import RavenVue from 'raven-js/plugins/vue';
+// Raven.config('http://7a81c2d23e744691bd67198a05afebd1@www.johnkee.com:9000/3').addPlugin(RavenVue, Vue).install();
 
 
 Vue.use(VueI18n);

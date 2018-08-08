@@ -6,34 +6,14 @@
 <template>
     <div class="access">
         <Row>
-            <Col span="8">
-                <Card>
-                    <p slot="title">
-                        <Icon type="android-contact"></Icon>
-                        当前用户
-                    </p>
-                    <div class="access-user-con access-current-user-con">
-                        <img :src="avatorPath" alt="">
-                        <p>当前用户权限值:<b>{{ accessCode }}</b></p>
-                    </div>
-                </Card>
-            </Col>
             <Col span="16" class="padding-left-10">
-                <Card>
+                <Card span="16" class="padding-top-10" v-for="(news,index) in allNews" :key=index>
                     <p slot="title">
-                        <Icon type="android-contacts"></Icon>
-                        不同权限用户的不同菜单
+                        <Icon type="android-contacts" v-text=" news.news_cntitle"></Icon>
                     </p>
                     <div class="access-user-con access-change-access-con">
-                        <Col span="8">
-                            <Row type="flex" justify="center" align="middle" class="access-change-access-con-row">
-                                <i-switch :value="switchValue" @on-change="changeAccess" size="large"></i-switch>
-                            </Row>
-                        </Col>
                         <Col span="16" class="padding-left-10">
-                            <Row type="flex" justify="center" align="middle" class="access-change-access-con-row">
-                                <p>您可以通过左侧的开关来切换当前用户的权限值，然后您可以观察左侧菜单栏的变化，如果当前用户的权限值是<b> 0 </b>，则左侧菜单栏会显示’权限测试页‘这一项('权限测试页'只用于测试，点击不会跳转)。</p>
-                            </Row>
+                            <p>{{ news.news_content }}</p>
                         </Col>
                     </div>
                 </Card>
@@ -43,31 +23,47 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+import { getNews, queryProjects } from '../../../api/api';
 export default {
-    name: 'access_index',
+    name: 'news-view',
     data () {
         return {
-            accessCode: parseInt(Cookies.get('access')),
-            switchValue: parseInt(Cookies.get('access')) === 1
+            allNews: [], // news
+            allProjects: [],
+            data1: [],
+            initTable1: []
         };
     },
-    computed: {
-        avatorPath () {
-            return localStorage.avatorImgPath;
+    methods: {
+        getnews () { // 获取菜单
+            getNews({
+                params: {}
+            }).then((response) => {
+                // console.log(response);
+                this.allNews = response.data.results;
+            })
+                .catch(function (error) {
+                    console.log(error);
+                    //this.allMenuLabel = error;
+                });
+        },
+        getProjects () { // 获取项目列表
+            queryProjects({
+                params: {}
+            }).then((response) => {
+                // console.log(response);
+                this.allProjects = response.data;
+                this.data1  = this.allProjects.results;
+            })
+                .catch(function (error) {
+                    console.log(error);
+                    //this.allProjects = error;
+                });
         }
     },
-    methods: {
-        changeAccess (res) {
-            if (res) {
-                this.accessCode = 1;
-                Cookies.set('access', 1);
-            } else {
-                this.accessCode = 0;
-                Cookies.set('access', 0);
-            }
-            this.$store.commit('updateMenulist');
-        }
+    created () {
+        this.getnews(); // 获取news
+        this.getProjects();
     }
 };
 </script>
